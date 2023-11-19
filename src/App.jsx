@@ -2,7 +2,7 @@
 import { useState } from 'react'
 
 let socket = new WebSocket(
-  "ws://localhost:8000/ws/chat/"
+  "ws://ai-chatbot-backend-swart.vercel.app//ws/chat/"
 )
 
 const App = () => {
