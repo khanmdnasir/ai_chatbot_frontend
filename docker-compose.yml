@@ -1,9 +1,8 @@
-version: '3.7'
+version: "3"
 services:
-  frontend:
+  react-app:
     build:
       context: .
-    container_name: chatbot_frontend
-    command: npm run serve
+      dockerfile: Dockerfile
     ports:
-      - 5173:5173
+      - "5173:5173"
