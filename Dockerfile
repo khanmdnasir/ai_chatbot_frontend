@@ -1,7 +1,17 @@
 FROM node:18-alpine
-RUN apk update && apk add git
+
 WORKDIR /app
-COPY package.json /app/package.json
-COPY . .
+
+COPY . /app
+
+ENV NODE_ENV=production
+
+RUN npm install serve -g
+
 RUN npm install
+
 RUN npm run build
+
+EXPOSE 5173
+
+CMD ["npm", "run", "serve"]
