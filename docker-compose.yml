@@ -3,7 +3,6 @@ services:
   frontend:
     build:
       context: .
-    container_name: chatbot_frontend
-    ports:
+    command: npx serve -s build
+    expose:
       - 5173
-
