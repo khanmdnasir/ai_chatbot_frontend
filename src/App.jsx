@@ -2,7 +2,7 @@
 import { useState } from 'react'
 
 let socket = new WebSocket(
-  "wss://13.233.153.23:8000///ws/chat/"
+  "wss://13.233.153.23:8000/ws/chat/"
 )
 
 const App = () => {
