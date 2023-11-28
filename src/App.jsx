@@ -2,13 +2,12 @@
 import { useState } from 'react'
 
 let socket = new WebSocket(
-  "ws://15.207.109.35:8000/ws/chat/"
+  "ws://localhost:8003/ws/chat/"
 )
 
 const App = () => {
   const [inputMessage, setInputMessage] = useState('');
   const [messages, setMessages] = useState([]);
-
 
   const handleInputChange = (e) => {
     setInputMessage(e.target.value);
@@ -22,23 +21,43 @@ const App = () => {
     const message = {
       role: "user",
       content: inputMessage,
+      stream: false
     };
-    const jsonData = JSON.stringify(message);
-    setMessages([...messages, message]);
+    setMessages((prevMessages) => [...prevMessages, message]);
     setInputMessage('');
-    socket.send(jsonData)
+    socket.send(JSON.stringify({ "message": inputMessage}))
     
   };
 
+  
   socket.onmessage = (event) => {
-    const message = JSON.parse(event.data);
-    console.log(message)
-    setMessages([...messages, message]);
-  };
-
-  socket.onopen = () => {
-    setMessages([...messages, {"role": "assistant", "content": "how can i help you?"}])
+  const message = JSON.parse(event.data);
+  if (message.stream === 'start') {
+    setMessages((prevMessages) => [...prevMessages, { role: "assistant", content: '', stream: true }]);
+  } else if (message.stream && message.message !== null) {
+    setMessages((prevMessages) => prevMessages.map(msg => {
+      if (msg.stream) {
+        return { ...msg, content: msg.content + message.message };
+      }
+      return msg;
+    }));
+  } else {
+    setMessages((prevMessages) => prevMessages.map(msg => {
+      if (msg.stream) {
+        return { ...msg, stream: false };
+      }
+      return msg;
+    }));
   }
+  
+  
+};
+  
+  
+  
+  socket.onopen = () => {
+    setMessages((prevMessages) => [...prevMessages, { role: "assistant", content: "how can i help you?", stream: false }]);
+  };
   return (
     <div className="main-div">
      <div className="container">
